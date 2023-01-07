@@ -1,0 +1,60 @@
+# $t0 = consumo
+# $t1 = 7 conta de agua 
+
+.data
+pul:  .asciiz "\n"
+
+.text
+
+main:
+    
+    li		$v0,5 		# $v0 = input
+    syscall
+    move 	$t0, $v0	# $t1 = input
+
+    li		$t1,  7
+            
+    bgt		$t0, 100, quarto	# if $t0 > 100 then goto target
+    bgt		$t0, 30, terceiro	# if $t0 > 30 then goto target
+    bgt		$t0, 10, segundo	# if $t0 > 10 then goto target
+
+    j fim
+
+segundo: # 11 - 30
+    sub		$t2, $t0, 10		# $t2 = $t0 - 30
+    
+    add		$t1, $t2, $t1		# $t1 = $t2 + $t1
+
+    j fim
+        
+
+terceiro: # 31 - 100
+    addi	$t1, $t1, 20	# $t1 = $t1 + 20
+
+    sub		$t2, $t0, 30
+    mul     $t2, $t2, 2
+
+    add		$t1, $t2, $t1		# $t1 = $t2 + $t1
+
+    j fim
+    
+
+quarto: # 100 - ...
+    addi	$t1, $t1, 160	# $t1 = $t1 + 20
+
+    sub		$t2, $t0, 100
+    mul     $t2, $t2, 5
+
+    add		$t1, $t2, $t1		# $t1 = $t2 + $t1
+
+    j fim
+
+
+fim:
+    li		$v0, 1		## print resultado
+    move    $a0, $t1
+    syscall
+
+    li		$v0, 10 		# exit
+    syscall
+    
