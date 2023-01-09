@@ -1,0 +1,67 @@
+.data
+pul:  .asciiz "\n"
+
+gabarito: .space 1024
+marcadas: .space 1024
+
+.text
+
+# $s1 e $t3 -> resp corretas
+# $s2 e $t4> resp usuario
+# $s0 -> qtd de questoes
+# $t1 -> qtd de acertos
+# $t2 -> contador 
+
+main:
+    
+    li		$v0,5 		    # input -> qtd de questoes
+    syscall
+    move 	$s0, $v0	
+
+    addi	$v0, $0, 8			# input gabaritp
+    la		$a0, gabarito		
+    li		$a1, 1024		    
+    syscall
+    la		$s1, gabarito		
+    
+    addi	$v0, $0, 8			# input marcadas
+    la		$a0, marcadas		
+    li		$a1, 1024		    
+    syscall 
+    la		$s2, marcadas		
+
+    li		$t1, 0	    # $t1 = qtd acertos
+    li		$t2, 0		# $t2 =0 
+    
+    j comparaRespostas
+
+comparaRespostas:
+    beq		$t2, $s0, fim         # verifica se qtd de questões e igual a 0, se for para o loop
+
+    lb      $t3,0($s1)               # pega o prox char de $s1
+    lb      $t4,0($s2)               # pega o prox char de $s2
+    
+    bne     $t3,$t4,incrementos     # nao sao iguais vai para incrementos
+
+    addi	$t1, $t1, 1			# $t1 ++
+
+    j incrementos   
+           
+incrementos:
+    addi    $t2, $t2, 1
+    addi	$s1, $s1, 1      	# $s1 ++   
+    addi	$s2, $s2, 1      	# $s2 ++ 
+    j		comparaRespostas	# jump to comparaRespostas
+
+fim:    
+    li		$v0, 1		# print acertos
+    move    $a0, $t1
+    syscall
+
+    li		$v0,4 		    
+    la		$a0, pul		# print pular linha
+    syscall
+
+    li		$v0, 10 	# exit
+    syscall
+
